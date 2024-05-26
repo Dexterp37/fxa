@@ -2,12 +2,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { EmailHeader, EmailType } from '../../lib/email';
-import { Page, expect, test } from '../../lib/fixtures/standard';
-import { syncMobileOAuthQueryParams } from '../../lib/query-params';
-import { BaseTarget } from '../../lib/targets/base';
-import { ResetPasswordReactPage } from '../../pages/resetPasswordReact';
-import { LoginPage } from '../../pages/login';
+import { EmailHeader, EmailType } from '../../../lib/email';
+import { Page, expect, test } from '../../../lib/fixtures/standard';
+import { syncMobileOAuthQueryParams } from '../../../lib/query-params';
+import { BaseTarget } from '../../../lib/targets/base';
+import { ResetPasswordReactPage } from '../../../pages/resetPasswordReact';
+import { LoginPage } from '../../../pages/login';
 
 const SERVICE_NAME_123 = '123';
 const SERVICE_NAME_FIREFOX = 'Firefox';
@@ -18,7 +18,7 @@ test.describe('severity-1 #smoke', () => {
       const config = await configPage.getConfig();
       test.skip(
         config.featureFlags.resetPasswordWithCode === true,
-        'see FXA-9612'
+        'see FXA-9728, remove these tests'
       );
     });
 

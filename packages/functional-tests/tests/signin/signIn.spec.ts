@@ -12,7 +12,7 @@ test.describe('severity-2 #smoke', () => {
     test('signin verified with incorrect password, click `forgot password?`', async ({
       target,
       page,
-      pages: { configPage, login, resetPassword },
+      pages: { configPage, login, resetPasswordReact },
       testAccountTracker,
     }) => {
       const config = await configPage.getConfig();
@@ -36,7 +36,7 @@ test.describe('severity-2 #smoke', () => {
       await login.clickForgotPassword();
 
       //Verify reset password header
-      expect(await resetPassword.resetPasswordHeader()).toBe(true);
+      await expect(resetPasswordReact.resetPasswordHeading).toBeVisible();
     });
 
     test('signin with email with leading/trailing whitespace on the email', async ({
