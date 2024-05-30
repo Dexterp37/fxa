@@ -14,6 +14,7 @@ import {
   isOAuthIntegration,
   useAuthClient,
   useFtlMsgResolver,
+  useSensitiveDataClient,
 } from '../../../models';
 
 // using default signin handlers
@@ -33,6 +34,7 @@ import { MozServices } from '../../../lib/types';
 import { QueryParams } from '../../..';
 import { queryParamsToMetricsContext } from '../../../lib/metrics';
 import OAuthDataError from '../../../components/OAuthDataError';
+import { getCredentials } from 'fxa-auth-client/lib/crypto';
 
 const SigninUnblockContainer = ({
   integration,
@@ -47,7 +49,13 @@ const SigninUnblockContainer = ({
   const location = useLocation() as ReturnType<typeof useLocation> & {
     state: SigninUnblockLocationState;
   };
-  const { email, authPW, hasLinkedAccount, hasPassword } = location.state || {};
+
+  const sensitiveDataClient = useSensitiveDataClient();
+
+  const sensitiveData = sensitiveDataClient.getData();
+  const { password } = sensitiveData || {};
+
+  const { email, hasLinkedAccount, hasPassword } = location.state || {};
 
   const wantsTwoStepAuthentication =
     isOAuthIntegration(integration) && integration.wantsTwoStepAuthentication();
@@ -73,12 +81,16 @@ const SigninUnblockContainer = ({
       ),
     };
 
+    // TODO: We technically have access to all the data needed to upgrade a user's key stretching
+    // maybe we should or in follow up
+    const credentials = await getCredentials(email, password!);
     try {
       return beginSignin({
         variables: {
           input: {
             email,
-            authPW,
+            authPW: credentials.authPW,
+            credentials,
             options,
           },
         },
@@ -109,7 +121,7 @@ const SigninUnblockContainer = ({
     return <OAuthDataError error={oAuthDataError} />;
   }
 
-  if (!email || !authPW) {
+  if (!email || !password) {
     hardNavigate('/', {}, true);
     return <LoadingSpinner fullScreen />;
   }

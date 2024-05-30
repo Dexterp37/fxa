@@ -24,7 +24,11 @@ import {
 import GleanMetrics from '../../lib/glean';
 import { usePageViewEvent } from '../../lib/metrics';
 import { StoredAccountData, storeAccountData } from '../../lib/storage-utils';
-import { isOAuthIntegration, useFtlMsgResolver } from '../../models';
+import {
+  isOAuthIntegration,
+  useSensitiveDataClient,
+  useFtlMsgResolver,
+} from '../../models';
 import {
   isClientMonitor,
   isClientPocket,
@@ -32,7 +36,6 @@ import {
 import { SigninFormData, SigninProps } from './interfaces';
 import { handleNavigation } from './utils';
 import { useWebRedirect } from '../../lib/hooks/useWebRedirect';
-import { getCredentials } from 'fxa-auth-client/lib/crypto';
 
 export const viewName = 'signin';
 
@@ -61,6 +64,7 @@ const Signin = ({
   const navigate = useNavigate();
   const ftlMsgResolver = useFtlMsgResolver();
   const webRedirectCheck = useWebRedirect(integration.data.redirectTo);
+  const sensitiveDataClient = useSensitiveDataClient();
 
   const [bannerError, setBannerError] = useState(
     localizedErrorFromLocationState || ''
@@ -232,14 +236,15 @@ const Signin = ({
                 break;
               }
 
-              // Fallback to using v1 creds for signin unblock and don't
-              // upgrade user to v2 keys
-              const v1Credentials = await getCredentials(email, password);
+              // Store password and email in an apollo cache to be used
+              // in the unblock page
+              sensitiveDataClient.setData({
+                password,
+              });
               // navigate only if sending the unblock code email is successful
               navigate('/signin_unblock', {
                 state: {
                   email,
-                  authPW: v1Credentials.authPW,
                   // TODO: in FXA-9177, remove hasLinkedAccount and hasPassword from state
                   // will be stored in Apollo cache at the container level
                   hasPassword,
