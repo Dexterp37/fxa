@@ -70,14 +70,13 @@ const CompleteResetPassword = ({
                   recovery key.
                 </p>
               </FtlMsg>
-              {/* TODO add metrics to measure if users see and click on this link */}
               <FtlMsg id="complete-reset-password-recovery-key-link">
                 <Link
                   to={`/account_recovery_confirm_key${location.search}`}
                   state={locationState}
                   className="link-white underline-offset-4"
                   onClick={() =>
-                    GleanMetrics.passwordReset.createNewClickRecoveryKeyMessage()
+                    GleanMetrics.passwordReset.createNewRecoveryKeyMessageClick
                   }
                 >
                   Reset your password with your account recovery key.
