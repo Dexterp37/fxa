@@ -30,6 +30,9 @@ export class SignInOptionsInput {
 
   @Field(() => MetricsContext, { nullable: true })
   public metricsContext?: MetricsContext;
+
+  @Field({ nullable: true })
+  public originalLoginEmail?: string;
 }
 
 @InputType()

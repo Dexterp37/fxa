@@ -575,6 +575,7 @@ export async function trySignIn(
     metricsContext: MetricsContext;
     service?: any;
     unblockCode?: string;
+    originalLoginEmail?: string;
   },
   onRetryCorrectedEmail?: (correctedEmail: string) => Promise<{
     v1Credentials: { authPW: string; unwrapBKey: string };
@@ -626,6 +627,7 @@ export async function trySignIn(
       const { v1Credentials, v2Credentials } = await onRetryCorrectedEmail(
         result.error.email
       );
+
       // Try one more time with the corrected email
       return trySignIn(
         result.error.email,
@@ -633,7 +635,10 @@ export async function trySignIn(
         v2Credentials,
         unverifiedAccount,
         beginSignin,
-        options
+        {
+          ...options,
+          originalLoginEmail: email,
+        }
       );
     }
 
