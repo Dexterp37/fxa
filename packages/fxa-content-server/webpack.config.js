@@ -62,8 +62,9 @@ const webpackConfig = {
       draggable: require.resolve('jquery-ui/ui/widgets/draggable'),
       duration: require.resolve('duration-js/duration'),
       'fast-text-encoding': require.resolve('fast-text-encoding'),
-      fxaCryptoDeriver: require.resolve(
-        'fxa-crypto-relier/dist/fxa-crypto-relier/fxa-crypto-deriver'
+      fxaCryptoDeriver: path.resolve(
+        __dirname,
+        '../../dist/libs/vendored/crypto-relier/src/index.js'
       ),
       fxaPairingChannel: require.resolve(
         'fxa-pairing-channel/dist/FxAccountsPairingChannel.babel.umd.js'

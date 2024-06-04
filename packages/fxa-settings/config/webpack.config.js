@@ -328,8 +328,9 @@ module.exports = function (webpackEnv) {
           'react-dom$': 'react-dom/profiling',
           'scheduler/tracing': 'scheduler/tracing-profiling',
         }),
-        fxaCryptoDeriver: require.resolve(
-          'fxa-crypto-relier/dist/fxa-crypto-relier/fxa-crypto-deriver'
+        fxaCryptoDeriver: path.resolve(
+          __dirname,
+          '../../../dist/libs/vendored/crypto-relier/src/index.js'
         ),
         ...(modules.webpackAliases || {}),
       },
@@ -355,6 +356,9 @@ module.exports = function (webpackEnv) {
       fallback: {
         fs: false,
         path: false,
+        buffer: require.resolve('buffer/'),
+        crypto: require.resolve('crypto-browserify'),
+        stream: require.resolve('stream-browserify'),
       },
     },
     module: {
